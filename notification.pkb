@@ -1,4 +1,3 @@
-
 CREATE OR REPLACE PACKAGE BODY notifications IS
 
 -- declaracion de tipos de datos
@@ -184,7 +183,6 @@ CREATE OR REPLACE PACKAGE BODY notifications IS
         v_idPlan cm_plan.id_plan%TYPE;
         v_descPlan cm_plan.descripcion%TYPE;
         v_vlrPlan cm_plan.valor%TYPE;
-
         -- Notificacion
         v_idNotificacion cm_notificacion.id_notificacion%TYPE;
         v_plantillaPlan cm_notificacion.plantilla%TYPE;
@@ -193,7 +191,6 @@ CREATE OR REPLACE PACKAGE BODY notifications IS
         v_nomUsuario cm_usuario.nombre%TYPE;
 
         v_exists number := 0; -- verificar si existe en el historial de notificaciones
-
     BEGIN
         -- verificar que la notificacion no se haya generado y se encuentre en el historial de notificaciones 
         SELECT count(*) INTO v_exists
@@ -232,20 +229,18 @@ CREATE OR REPLACE PACKAGE BODY notifications IS
             
             -- IMPRMIR LA PLANTILLA 
             DBMS_OUTPUT.PUT_LINE('Plantilla de notificación: ' || v_plantillaPlan);
+            
+            -- Insertar en la tabla de historial de notificaciones
+            INSERT INTO cm_historial_notificacion ( id_factura,id_notificacion, fecha, estado, mensaje, respuesta )
+            VALUES ( p_id_factura, v_idNotificacion, SYSDATE, 'Enviada', v_plantillaPlan, NULL );
 
- 
+            -- Confirmar la transacción
+            COMMIT;
 
+            DBMS_OUTPUT.PUT_LINE('Registro insertado en cm_historial_notificacion para la factura: ' || p_id_factura);
 
-
-            -- Verificar si la notificación ya existe en el historial de notificaciones     
         END IF;
 
-        -- Insertar en la tabla de historial de notificaciones
-        --INSERT INTO cm_historial_notificacion (id_factura, id_notificacion, fecha, estado)
-        --VALUES (p_id_factura, id_notificacion, SYSDATE, 'Notificada');
-        
-        --COMMIT;
-        
         RETURN 1; -- Retornar un valor de éxito
     EXCEPTION
         WHEN OTHERS THEN
