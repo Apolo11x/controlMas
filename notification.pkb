@@ -255,7 +255,7 @@ CREATE OR REPLACE PACKAGE BODY notifications IS
         v_response VARCHAR2(4000);
     BEGIN
         -- Obtener el número de teléfono del usuario
-        SELECT trrim(telefono)
+        SELECT trim(telefono)
         INTO v_numero_telefono
         FROM cm_usuario
         WHERE id_usuario = p_id_usuario;
